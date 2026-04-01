@@ -18,7 +18,7 @@ st.markdown("""
     .main { background-color: #0e1117; color: #ffffff; }
     .stButton>button { width: 100%; border-radius: 5px; height: 3em; background-color: #ff4b4b; color: white; }
     </style>
-    """, unsafe_allow_name_with_html=True)
+    """, unsafe_allow_html=True) # <--- Correct parameter name
 
 # --- LOAD MODEL & TOKENIZER ---
 @st.cache_resource

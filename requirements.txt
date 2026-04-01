@@ -3,3 +3,4 @@ transformers
 streamlit
 datasets
 numpy
+huggingface_hub

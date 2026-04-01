@@ -21,7 +21,7 @@ st.markdown("""
     """, unsafe_allow_html=True) # <--- Correct parameter name
 
 # --- LOAD MODEL & TOKENIZER ---
-@@st.cache_resource
+@st.cache_resource
 def load_all():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     tokenizer = AutoTokenizer.from_pretrained("gpt2")

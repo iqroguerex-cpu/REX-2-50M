@@ -12,10 +12,11 @@ It showcases a complete **end-to-end LLM pipeline**, from architecture design to
 
 ---
 
-## 🔗 Project Links
+## 🔗 Links
 
-[![Hugging Face](https://img.shields.io/badge/🤗%20HuggingFace-Model-yellow)](https://huggingface.co/IqRogueRex/REX-2-50M)
+[![🤗 Hugging Face](https://img.shields.io/badge/HuggingFace-Model-yellow)](https://huggingface.co/IqRogueRex/REX-2-50M)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-black?logo=github)](https://github.com/iqroguerex-cpu/REX-2-50M)
+[![🚀 Streamlit](https://img.shields.io/badge/Live-Demo-orange?logo=streamlit)](https://rextwo50mbychinmay.streamlit.app/)
 
 ---
 

@@ -1,89 +1,82 @@
 import streamlit as st
 import torch
-import os
 from transformers import AutoTokenizer
 from huggingface_hub import hf_hub_download
-from model import IQ_Model  # Importing your uploaded architecture
+from model import IQ_Model 
 
-# --- PAGE CONFIG ---
-st.set_page_config(
-    page_title="IQROGUEREX | REX-2-50M",
-    page_icon="🦖",
-    layout="centered"
-)
+# --- PAGE SETUP ---
+st.set_page_config(page_title="IQROGUEREX REX-2", page_icon="🦖")
 
-# --- STYLE ---
+# Custom CSS for the "Final Polish" look
 st.markdown("""
     <style>
-    .main { background-color: #0e1117; color: #ffffff; }
-    .stButton>button { width: 100%; border-radius: 5px; height: 3em; background-color: #ff4b4b; color: white; }
+    .main { background-color: #0e1117; }
+    .stButton>button { width: 100%; background-color: #ff4b4b; color: white; font-weight: bold; }
     </style>
-    """, unsafe_allow_html=True) # <--- Correct parameter name
+    """, unsafe_allow_html=True)
 
-# --- LOAD MODEL & TOKENIZER ---
+# --- LOAD ENGINE ---
 @st.cache_resource
-def load_all():
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    tokenizer = AutoTokenizer.from_pretrained("gpt2")
-    
-    # --- CONFIG ---
-    REPO_ID = "IqRogueRex/REX-2-50M"
-    FILENAME = "iq_model_stream_final.pth" # Ensure this matches HF exactly!
-    
+def load_rex_engine():
     try:
-        with st.spinner("Downloading REX-2 Weights from IQROGUEREX..."):
-            # The token=False is the key fix for 401 errors on public repos
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        tokenizer = AutoTokenizer.from_pretrained("gpt2")
+        
+        # Hugging Face Config
+        REPO_ID = "IqRogueRex/REX-2-50M"
+        FILENAME = "iq_model_stream_final.pth"
+        
+        with st.spinner("Downloading REX-2 Weights from IQROGUEREX Hub..."):
+            # token=False ensures anonymous access to your public repo
             weights_path = hf_hub_download(
                 repo_id=REPO_ID, 
                 filename=FILENAME, 
                 token=False 
             )
         
-        # Initialize Architecture (Make sure model.py is in your GitHub)
+        # Initialize and Load
         model = IQ_Model(tokenizer.vocab_size).to(device)
-        
-        # Load Weights
         state_dict = torch.load(weights_path, map_location=device, weights_only=True)
         model.load_state_dict(state_dict)
         model.eval()
         
         return model, tokenizer, device
     except Exception as e:
-        st.error(f"Critical Error: {e}")
+        st.error(f"Engine Startup Failed: {e}")
         return None, None, None
 
-# --- SIDEBAR SETTINGS ---
-st.sidebar.header("REX-2 Engine Settings")
-temperature = st.sidebar.slider("Creativity (Temp)", 0.1, 1.5, 0.7)
-max_tokens = st.sidebar.slider("Story Length", 20, 200, 100)
+# --- RUN LOAD ---
+model, tokenizer, device = load_rex_engine()
 
-# --- MAIN UI ---
+# --- UI INTERFACE ---
 st.title("🦖 REX-2 Story Engine")
-st.caption("A 50M Parameter Transformer by IQROGUEREX")
+st.write("A custom 50M Parameter Transformer by **IQROGUEREX**.")
 
-user_input = st.text_area("Enter a story prompt:", "Once upon a time, REX the robot found a", height=100)
+# Sidebar Controls
+st.sidebar.header("Generation Settings")
+temp = st.sidebar.slider("Creativity (Temperature)", 0.1, 1.5, 0.7)
+max_len = st.sidebar.slider("Max Story Length", 50, 300, 100)
 
+# Input
+user_prompt = st.text_area("Enter your story starter:", "One day, a tiny robot named REX")
+
+# Action
 if st.button("Generate with REX-2"):
-    if model and tokenizer:
-        with st.spinner("REX-2 is dreaming..."):
-            # Encode
-            input_ids = tokenizer.encode(user_input, return_tensors="pt").to(device)
-            
-            # Generate
+    if model is not None and tokenizer is not None:
+        with st.spinner("REX-2 is generating..."):
+            input_ids = tokenizer.encode(user_prompt, return_tensors="pt").to(device)
             output_ids = model.generate(
                 input_ids, 
-                max_new_tokens=max_tokens, 
-                temperature=temperature,
+                max_new_tokens=max_len, 
+                temperature=temp, 
                 device=device
             )
+            result = tokenizer.decode(output_ids[0], skip_special_tokens=True)
             
-            # Decode
-            response = tokenizer.decode(output_ids[0], skip_special_tokens=True)
-            
-            st.subheader("REX-2 Generated Output:")
-            st.info(response)
+            st.subheader("Result:")
+            st.info(result)
     else:
-        st.error("Model engine is offline. Check Hugging Face connection.")
+        st.error("Model engine is currently offline. Check your Hugging Face Repository.")
 
 st.divider()
-st.markdown("© 2026 **IQROGUEREX** | Lead Engineer: Chinmay V Chatradamath")
+st.caption("Built by Chinmay V Chatradamath | IQROGUEREX 2026")

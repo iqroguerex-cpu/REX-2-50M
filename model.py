@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
-# Configuration for the 50M Parameter Model
+# REX-2 50M Config
 BLOCK_SIZE = 256
 N_EMBD = 512
 N_HEAD = 8
@@ -22,12 +22,7 @@ class IQ_Model(nn.Module):
         pos_emb = self.position_embedding_table(torch.arange(T, device=device))
         x = self.dropout(tok_emb + pos_emb)
         logits = self.lm_head(x)
-
-        if targets is None:
-            return logits, None
-        else:
-            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1))
-            return logits, loss
+        return logits, None
 
     @torch.no_grad()
     def generate(self, idx, max_new_tokens, temperature=0.7, device='cpu'):

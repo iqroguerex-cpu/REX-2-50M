@@ -27,13 +27,13 @@ def load_rex_engine():
         FILENAME = "iq_model_stream_final.pth"
         
         with st.spinner("Synchronizing REX-2 Weights..."):
-    weights_path = hf_hub_download(
+        weights_path = hf_hub_download(
         repo_id=REPO_ID, 
         filename=FILENAME, 
         token=False,            # <--- Forces NO token usage
         local_files_only=False, # <--- Forces a check against the web
         force_download=True     # <--- Bypasses any "401" cached files
-    )
+         )
         
         # Initialize and Load
         model = IQ_Model(tokenizer.vocab_size).to(device)

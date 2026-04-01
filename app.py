@@ -21,32 +21,36 @@ st.markdown("""
     """, unsafe_allow_html=True) # <--- Correct parameter name
 
 # --- LOAD MODEL & TOKENIZER ---
-@st.cache_resource
-def load_iq_engine():
+@@st.cache_resource
+def load_all():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     tokenizer = AutoTokenizer.from_pretrained("gpt2")
     
-    # 1. Download weights from your HF Repo
+    # --- CONFIG ---
     REPO_ID = "IqRogueRex/REX-2-50M"
-    FILENAME = "iq_model_stream_final.pth"
+    FILENAME = "iq_model_stream_final.pth" # Ensure this matches HF exactly!
     
     try:
-        with st.spinner("Synchronizing REX-2 Weights from IQROGUEREX Hub..."):
-            weights_path = hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
+        with st.spinner("Downloading REX-2 Weights from IQROGUEREX..."):
+            # The token=False is the key fix for 401 errors on public repos
+            weights_path = hf_hub_download(
+                repo_id=REPO_ID, 
+                filename=FILENAME, 
+                token=False 
+            )
         
-        # 2. Initialize Architecture
+        # Initialize Architecture (Make sure model.py is in your GitHub)
         model = IQ_Model(tokenizer.vocab_size).to(device)
         
-        # 3. Load Weights
-        checkpoint = torch.load(weights_path, map_location=device)
-        model.load_state_dict(checkpoint)
+        # Load Weights
+        state_dict = torch.load(weights_path, map_location=device, weights_only=True)
+        model.load_state_dict(state_dict)
         model.eval()
+        
         return model, tokenizer, device
     except Exception as e:
-        st.error(f"Failed to load model from Hugging Face: {e}")
+        st.error(f"Critical Error: {e}")
         return None, None, None
-
-model, tokenizer, device = load_iq_engine()
 
 # --- SIDEBAR SETTINGS ---
 st.sidebar.header("REX-2 Engine Settings")

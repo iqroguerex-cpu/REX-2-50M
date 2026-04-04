@@ -1,4 +1,4 @@
-# 🦖 REX-2: 50M Parameter Story Engine (IQROGUEREX)
+# 🦖 REX-2: 50M Parameter Story Engine
 
 ![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
 ![PyTorch](https://img.shields.io/badge/Framework-PyTorch-red.svg)
@@ -177,7 +177,7 @@ Most modern LLMs rely on massive datasets and compute.
 
 ## 👨‍💻 Author
 
-**Chinmay V Chatradamath**
+**Chinmay V Chatradamath.**
 
 ---
 

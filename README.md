@@ -177,7 +177,7 @@ Most modern LLMs rely on massive datasets and compute.
 
 ## 👨‍💻 Author
 
-**Chinmay V Chatradamath.**
+**Chinmay V Chatradamath..**
 
 ---
 

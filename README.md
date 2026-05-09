@@ -1,4 +1,4 @@
-# 🦖 REX-2: 50M Parameter Story Engine
+# 🦖 REX-2: 50M Parameter Story Engine..
 
 ![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
 ![PyTorch](https://img.shields.io/badge/Framework-PyTorch-red.svg)
